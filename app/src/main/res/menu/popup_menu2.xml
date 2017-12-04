@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/five"
-        android:title="Hat1"/>
+        android:title="Fedora"/>
     <item
         android:id="@+id/six"
-        android:title="Hat2"/>
+        android:title="Cop"/>
     <item
         android:id="@+id/seven"
-        android:title="Hat3"/>
+        android:title="Christmas"/>
     <item
         android:id="@+id/eight"
-        android:title="Hat4"/>
+        android:title="Sunhat"/>
 
 </menu>
