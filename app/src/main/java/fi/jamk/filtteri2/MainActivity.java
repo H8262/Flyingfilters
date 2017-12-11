@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final int TAKE_PICTURE = 1; //lisätty
 
-    Button b_load, b_save, b_share, b_popup, b_take, b_popup2;
+    Button b_load, b_save, b_share, b_popup, b_take, b_popup2,b_ready,b_popup3;
     private ViewGroup rootLayout;
 
 
@@ -70,8 +70,13 @@ public class MainActivity extends AppCompatActivity {
     Bitmap bitmap;
     Bitmap kuva;
     // Bitmap newBitmap = convertImage(bitmap);
-    Integer photoHeight = 0;
-    Integer photoWidth = 0;
+    Integer imageHeight = 0;
+    Integer imageWidth = 0;
+    Uri bitmapUri;
+
+    Drawable scaled;
+    Drawable unscaled;
+    Bitmap bm;
 
 
     String currentImage = "";
@@ -146,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         b_popup = (Button) findViewById(R.id.b_popup);
         b_popup2 = (Button) findViewById(R.id.b_popup2);
+        b_ready = (Button) findViewById(R.id.b_ready);
 
 
         b_popup.setEnabled(true);
@@ -153,10 +159,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Haetaan edellisestä activitystä kuva
-        Intent intent = getIntent();
-        String imageUri = intent.getStringExtra("imagePath");
-        Uri fileUri = Uri.parse(imageUri);
-        imageView.setImageURI(fileUri);
+        try {
+            Intent intent = getIntent();
+            final String imageUri = intent.getStringExtra("imagePath");
+            Uri fileUri = Uri.parse(imageUri);
+
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(new File(fileUri.getPath()).getAbsolutePath(), options);
+            imageHeight = options.outHeight;
+            imageWidth = options.outWidth;
+
+            imageView.setImageBitmap(bitmap);
+        } catch(IOException e){
+
+        }
+
 
 
         b_popup.setOnClickListener(new View.OnClickListener() {
@@ -176,15 +196,29 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (item.getItemId()) {
                             case R.id.one:
-                                imageFilter.setImageResource(R.drawable.filter);
+
+                                unscaled = getResources().getDrawable(R.drawable.filter);
+                                bm = ((BitmapDrawable)unscaled).getBitmap();
+                                scaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bm, imageWidth, imageHeight, true));
+                                imageFilter.setImageDrawable(scaled);
+
                                 break;
 
                             case R.id.two:
-                                imageFilter.setImageResource(R.drawable.filter2);
+
+                                unscaled = getResources().getDrawable(R.drawable.filter2);
+                                bm = ((BitmapDrawable)unscaled).getBitmap();
+                                scaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bm, imageWidth, imageHeight, true));
+                                imageFilter.setImageDrawable(scaled);
+
                                 break;
 
                             case R.id.three:
-                                imageFilter.setImageResource(R.drawable.filter3);
+
+                                unscaled = getResources().getDrawable(R.drawable.filter3);
+                                bm = ((BitmapDrawable)unscaled).getBitmap();
+                                scaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bm, imageWidth, imageHeight, true));
+                                imageFilter.setImageDrawable(scaled);
                                 break;
                             /*   Bitmap kuva = BitmapFactory.decodeFile(picturePath);
                                 photoHeight = kuva.getHeight();
@@ -307,6 +341,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });*/
+
+        b_ready.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                //currentImage = "image" + fileName() + ".png";
+
+                Intent intent = new Intent(MainActivity.this, shareActivity.class);
+                View content = findViewById(R.id.lay);
+                Bitmap bitmap = getScreenShot(content);
+                intent.putExtra("image", bitmap);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -422,8 +473,6 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
 
             kuva = BitmapFactory.decodeFile(picturePath);
-            photoHeight = kuva.getHeight();
-            photoWidth = kuva.getWidth();
             imageView.setImageBitmap(kuva);
 
 
@@ -442,8 +491,6 @@ public class MainActivity extends AppCompatActivity {
                 //changing immutablebitmap to mutable bitmap by making a copy of it
                 Bitmap photo = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
-                photoHeight = photo.getHeight();
-                photoWidth = photo.getWidth();
 
                 //valokuvasta tulee vanmanen kun sitä skaalaa :(
                 //photo.setHeight(1280);
