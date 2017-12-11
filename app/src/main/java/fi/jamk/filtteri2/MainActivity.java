@@ -36,6 +36,7 @@ import android.view.View.OnTouchListener;
 import com.xiaopo.flying.sticker.StickerView;
 import com.xiaopo.flying.sticker.TextSticker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -173,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
             imageWidth = options.outWidth;
 
             imageView.setImageBitmap(bitmap);
+
+
+            Toast toast = Toast.makeText(getApplicationContext(), imageHeight.toString(), Toast.LENGTH_LONG);
+            toast.show();
+
         } catch(IOException e){
 
         }
@@ -348,13 +354,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                //currentImage = "image" + fileName() + ".png";
-
-                Intent intent = new Intent(MainActivity.this, shareActivity.class);
+                /*//currentImage = "image" + fileName() + ".png";
                 View content = findViewById(R.id.lay);
                 Bitmap bitmap = getScreenShot(content);
-                intent.putExtra("image", bitmap);
-                startActivity(intent);
+
+
+
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 0, bs);
+                byte[] byteArray = bs.toByteArray();
+
+                Intent intent = new Intent(MainActivity.this, shareActivity.class);
+                startActivity(intent);*/
 
             }
         });
