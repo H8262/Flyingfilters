@@ -158,30 +158,42 @@ public class MainActivity extends AppCompatActivity {
         b_popup.setEnabled(true);
         b_popup2.setEnabled(true);
 
+        if(getIntent().getStringExtra("id").equals("TAKE")){
+                // Haetaan edellisestä activitystä kuva
+                try {
 
-        // Haetaan edellisestä activitystä kuva
-        try {
-            Intent intent = getIntent();
-            final String imageUri = intent.getStringExtra("imagePath");
-            Uri fileUri = Uri.parse(imageUri);
+                    final String imageUri = getIntent().getStringExtra("imagePath");
+                    Uri fileUri = Uri.parse(imageUri);
 
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(new File(fileUri.getPath()).getAbsolutePath(), options);
+                    imageHeight = options.outHeight;
+                    imageWidth = options.outWidth;
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(new File(fileUri.getPath()).getAbsolutePath(), options);
-            imageHeight = options.outHeight;
-            imageWidth = options.outWidth;
-
-            imageView.setImageBitmap(bitmap);
+                    imageView.setImageBitmap(bitmap);
 
 
-            Toast toast = Toast.makeText(getApplicationContext(), imageHeight.toString(), Toast.LENGTH_LONG);
-            toast.show();
+                    //Toast toast = Toast.makeText(getApplicationContext(), imageHeight.toString(), Toast.LENGTH_LONG);
+                    //toast.show();
 
-        } catch(IOException e){
+                } catch(IOException e){
+
+                }
+            }
+            // jos käyttäjä lataa kuvan
+        if(getIntent().getStringExtra("id").equals("LOAD")){
+
+                final String picturePath = getIntent().getStringExtra("picture");
+                Bitmap kuva = BitmapFactory.decodeFile(picturePath);
+                imageHeight = kuva.getHeight();
+                imageWidth = kuva.getWidth();
+
+                imageView.setImageBitmap(kuva);
 
         }
+
 
 
 
@@ -526,6 +538,7 @@ public class MainActivity extends AppCompatActivity {
         currentFileName = imageFileName;
         return imageFileName;
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
