@@ -61,10 +61,8 @@ public class start extends AppCompatActivity {
         b_load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);*/
-                Intent intent = new Intent(view.getContext(), MainActivity.class);
-                view.getContext().startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, RESULT_LOAD_IMAGE);
 
             }
         });
@@ -91,6 +89,7 @@ public class start extends AppCompatActivity {
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
@@ -98,16 +97,11 @@ public class start extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
-            /*
 
-            kuva = BitmapFactory.decodeFile(picturePath);
-            photoHeight = kuva.getHeight();
-            photoWidth = kuva.getWidth();
-            imageView.setImageBitmap(kuva);
-
-            b_popup.setEnabled(true);
-            b_popup2.setEnabled(true);
-            */
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("id","LOAD");
+            intent.putExtra("picture", picturePath);
+            startActivity(intent);
 
         }
 
@@ -117,6 +111,7 @@ public class start extends AppCompatActivity {
             //try {
 
                 Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("id","TAKE");
                 intent.putExtra("imagePath", imageUri.toString());
                 startActivity(intent);
 
